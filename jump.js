@@ -49,6 +49,11 @@ bloco = {
         }
     },
 
+    reset:function(){
+        bloco.velocidade = 0
+        bloco.y = 0
+    },
+
     desenha: function(){
         ctx.fillStyle =this.cor
         ctx.fillRect(this.x, this.y, this.largura, this.altura)
@@ -64,7 +69,8 @@ obstaculos ={
     insere: function(){
         this._obs.push({
             x:LARGURA,
-            largura: 30 + Math.floor(21 * Math.random()),
+            /*largura: 30 + Math.floor(21 * Math.random()),*/
+            largura: 50,
             altura: 30 + Math.floor(129*Math.random()),
             cor:this.cores[Math.floor(5* Math.random())]
         })
@@ -119,9 +125,9 @@ function clique(event){
         estadoAtual = estados.jogando
     }else if(estadoAtual == estados.perdeu && bloco.y >= 2 * ALTURA){
         estadoAtual = estados.jogar
-        bloco.velocidade = 0
-        bloco.y = 0
-
+        obstaculo.limpa()
+        bloco.reset()
+       
     }
    
 }
@@ -166,9 +172,7 @@ function atualiza(){
       if(estadoAtual == estados.jogando)  {
         obstaculos.atualiza()
       }
-      else if(estadoAtual == estados.perdeu){
-        obstaculos.limpa()
-      }
+      
 }
 function desenha (){
     ctx.fillStyle ='#80daff'
