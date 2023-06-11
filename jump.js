@@ -1,6 +1,6 @@
 /*Variáveis do jogo*/
 
-var canvas, ctx, ALTURA, LARGURA, frames = 0, maxPulos = 3, velocidade =6, estadoAtual,
+var canvas, ctx, ALTURA, LARGURA, frames = 0, maxPulos = 3, velocidade = 6, estadoAtual,
 
 estados ={
     jogar: 0,
@@ -29,6 +29,7 @@ bloco = {
     velocidade: 0,
     forcaDoPulo: 23.6,
     qntPulos: 0,
+    score: 0,
 
     atualiza: function(){
         this.velocidade += this.gravidade
@@ -50,8 +51,9 @@ bloco = {
     },
 
     reset:function(){
-        bloco.velocidade = 0
-        bloco.y = 0
+        this.velocidade = 0
+        this.y = 0
+        this.score = 0
     },
 
     desenha: function(){
@@ -71,8 +73,8 @@ obstaculos ={
             x:LARGURA,
             /*largura: 30 + Math.floor(21 * Math.random()),*/
             largura: 50,
-            altura: 30 + Math.floor(129*Math.random()),
-            cor:this.cores[Math.floor(5* Math.random())]
+            altura: 30 + Math.floor(120 *Math.random()),
+            cor:this.cores[Math.floor(5 * Math.random())]
         })
 
         this.tempoInsere = 30 + Math.floor(21 * Math.random())
@@ -94,6 +96,9 @@ obstaculos ={
 
                 estadoAtual = estados.perdeu
 
+            }
+            else if(obs.x ==0){
+                bloco.score++
             }
 
             else if(obs.x <= -obs.largura){
@@ -121,11 +126,13 @@ obstaculos ={
 function clique(event){
     if(estadoAtual == estados.jogando){
         bloco.pula()
+
     }else if(estadoAtual == estados.jogar){
         estadoAtual = estados.jogando
+
     }else if(estadoAtual == estados.perdeu && bloco.y >= 2 * ALTURA){
         estadoAtual = estados.jogar
-        obstaculo.limpa()
+        obstaculos.limpa()
         bloco.reset()
        
     }
@@ -178,6 +185,10 @@ function desenha (){
     ctx.fillStyle ='#80daff'
     ctx.fillRect(0, 0, LARGURA, ALTURA)
 
+    ctx.fillStyle = '#fff'
+    ctx.font = '50px Arial'
+    ctx.fillText (bloco.score, 30, 68)
+
     if(estadoAtual == estados.jogar){
         ctx.fillStyle ='green'
         ctx.fillRect(LARGURA / 2 - 50, ALTURA / 2 -50, 100, 100)
@@ -186,6 +197,16 @@ function desenha (){
     else if(estadoAtual == estados.perdeu){
         ctx.fillStyle = 'red'
         ctx.fillRect(LARGURA / 2 - 50, ALTURA / 2 - 50, 100, 100)
+
+        ctx.save()
+        ctx.translate(LARGURA/2, ALTURA/2)
+        ctx.fillStyle ='#fff'
+
+        if(bloco.score < 10){
+            ctx.fillText(bloco.score, -13, 19)
+        }else
+       
+        ctx.restore()
     }
   
         else if(estadoAtual == estados.jogando){
