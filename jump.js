@@ -83,12 +83,22 @@ obstaculos ={
 
             obs.x -= velocidade
 
-            if(obs.x <= -obs.largura){
+            if(bloco.x < obs.x + obs.largura && bloco.x + bloco.largura >= obs.x && bloco.y + bloco.altura >= chao.y - obs.altura){
+
+                estadoAtual = estados.perdeu
+
+            }
+
+            else if(obs.x <= -obs.largura){
                 this._obs.splice(i, 1)
                 tam--
                 i--
             }
         }
+    },
+
+    limpa: function(){
+        this._obs =[]
     },
 
     desenha: function(){
@@ -151,6 +161,9 @@ function atualiza(){
 
       if(estadoAtual == estados.jogando)  {
         obstaculos.atualiza()
+      }
+      else if(estadoAtual == estados.perdeu){
+        obstaculos.limpa()
       }
 }
 function desenha (){
