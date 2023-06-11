@@ -202,11 +202,17 @@ function desenha (){
         ctx.translate(LARGURA/2, ALTURA/2)
         ctx.fillStyle ='#fff'
 
-        if(bloco.score < 10){
+                
+        if(bloco.score < 10)
             ctx.fillText(bloco.score, -13, 19)
-        }else
-       
-        ctx.restore()
+        
+        else if(bloco.score >=10 && bloco.score < 100)
+            ctx.fillText(bloco.score,-26, 19)
+
+        else
+            ctx.fillText(bloco.score, -39, 19)
+        
+            ctx.restore()
     }
   
         else if(estadoAtual == estados.jogando){
