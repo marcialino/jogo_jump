@@ -1,6 +1,6 @@
 /*Variáveis do jogo*/
 
-var canvas, ctx, ALTURA, LARGURA, frames = 0, maxPulos = 3, velocidade = 6, estadoAtual,
+var canvas, ctx, ALTURA, LARGURA, frames = 0, maxPulos = 3, velocidade = 6, estadoAtual, record,
 
 estados ={
     jogar: 0,
@@ -53,6 +53,12 @@ bloco = {
     reset:function(){
         this.velocidade = 0
         this.y = 0
+
+        if(this.score > record) {
+            localStorage.setItem('record', this.score)
+            record = this.score
+        }
+
         this.score = 0
     },
 
@@ -160,6 +166,11 @@ function main (){
     document.addEventListener('mousedown',clique)
 
     estadoAtual = estados.jogar
+
+    record = localStorage.getItem('record')
+
+    if (record == null)
+        record = 0
     
     roda()
 
@@ -202,7 +213,18 @@ function desenha (){
         ctx.translate(LARGURA/2, ALTURA/2)
         ctx.fillStyle ='#fff'
 
-                
+        if(bloco.score > record)
+            ctx.fillText('Novo Record! ', -150, -65)
+
+        else if(record < 10)
+            ctx.fillText('Record: ' + record, -99, -65)
+
+        else if(record >= 10 && record < 100)
+            ctx.fillText('Record: ' + record, -112, -65 )
+
+        else
+            ctx.fillText('Record: ', + record, -125, -65)
+            
         if(bloco.score < 10)
             ctx.fillText(bloco.score, -13, 19)
         
