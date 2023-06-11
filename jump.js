@@ -1,4 +1,12 @@
-var canvas, ctx, ALTURA, LARGURA, frames = 0, maxPulos = 3, velocidade =6
+/*Variáveis do jogo*/
+
+var canvas, ctx, ALTURA, LARGURA, frames = 0, maxPulos = 3, velocidade =6, estadoAtual,
+
+estados ={
+    jogar: 0,
+    jogando: 1,
+    perdeu: 2
+},
 
 /*Variável Chão*/ 
 chao = {
@@ -94,7 +102,14 @@ obstaculos ={
 
 
 function clique(event){
-    bloco.pula()
+    if(estadoAtual == estados.jogando){
+        bloco.pula()
+    }else if(estadoAtual == estados.jogar){
+        estadoAtual = estados.jogando
+    }else if(estadoAtual == estados.perdeu){
+        estadoAtual = estados.jogar
+    }
+   
 }
 
 function main (){
@@ -116,6 +131,8 @@ function main (){
 
     /*Para saber se a pessoa clicou*/ 
     document.addEventListener('mousedown',clique)
+
+    estadoAtual = estados.jogar
     
     roda()
 
@@ -131,15 +148,30 @@ function atualiza(){
     frames++
 
     bloco.atualiza()
-    obstaculos.atualiza()
+
+      if(estadoAtual == estados.jogando)  {
+        obstaculos.atualiza()
+      }
 }
 function desenha (){
     ctx.fillStyle ='#80daff'
     ctx.fillRect(0, 0, LARGURA, ALTURA)
 
-    chao.desenha()  /*Chamar a variável chão, para aparecer na tela.*/
+    if(estadoAtual == estados.jogar){
+        ctx.fillStyle ='green'
+        ctx.fillRect(LARGURA / 2 - 50, ALTURA / 2 -50, 100, 100)
+    }
 
-    obstaculos.desenha()
+    else if(estadoAtual == estados.perdeu){
+        ctx.fillStyle = 'red'
+        ctx.fillRect(LARGURA / 2 - 50, ALTURA / 2 - 50, 100, 100)
+    }
+  
+        else if(estadoAtual == estados.jogando){
+            obstaculos.desenha()
+        }
+  
+    chao.desenha()  /*Chamar a variável chão, para aparecer na tela.*/
     bloco.desenha()
 }
  
