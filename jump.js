@@ -1,10 +1,10 @@
-var canvas, ctx, ALTURA, LARGURA, frames = 0, maxPulos = 3,
+var canvas, ctx, ALTURA, LARGURA, frames = 0, maxPulos = 3, velocidade =6
 
 /*Variável Chão*/ 
 chao = {
     y:550,
     altura:50,
-    cor:'#ffdf70',
+    cor:'#e8da78',
 
     desenha: function(){
         ctx.fillStyle = this.cor
@@ -16,10 +16,10 @@ bloco = {
     y:0,
     altura: 50,
     largura: 50,
-    cor:'#ff4e4e',
-    gravidade: 1.5,
+    cor:'#ff9239',
+    gravidade: 1.6,
     velocidade: 0,
-    forcaDoPulo: 15,
+    forcaDoPulo: 23.6,
     qntPulos: 0,
 
     atualiza: function(){
@@ -45,12 +45,46 @@ bloco = {
         ctx.fillRect(this.x, this.y, this.largura, this.altura)
 
     }
+},
+obstaculos ={
+    _obs: [],
+    cores: ['#ffbc1c', '#ff1c1c', '#ff85e1','#52a7ff', '#78ff5d'],
+
+    insere: function(){
+        this._obs.push({
+            x:LARGURA,
+            largura: 30 + Math.floor(21 * Math.random()),
+            altura: 30 + Math.floor(129*Math.random()),
+            cor:this.cores[Math,floor(5* Math.random())]
+        })
+    },
+
+    atualiza: function(){
+        for(var i =0, tam = this._obs.length; i < tam; i++){
+            var obs = this._obs[i]
+
+            obs.x -= velocidade
+
+            if(obs.x <= -obs.largura){
+                this._obs.splice(i, 1)
+            }
+        }
+    },
+
+    desenha: function(){
+        for (var i = 0, tam = this._obs.length; i< tam; i++ ){
+            var obs = this._obs[i]
+            ctx.fillStyle = obs.cor
+            ctx.fillRect(obs.x, chao.y - obs.altura, obs.largura, obs.altura)
+         }
+    }
 }
 
 
 function clique(event){
     bloco.pula()
 }
+
 function main (){
     ALTURA = window.innerHeight
     LARGURA = window.innerWidth
@@ -85,12 +119,15 @@ function atualiza(){
     frames++
 
     bloco.atualiza()
+    obstaculos.atualiza()
 }
 function desenha (){
-    ctx.fillStyle ='#50beff'
+    ctx.fillStyle ='#80daff'
     ctx.fillRect(0, 0, LARGURA, ALTURA)
 
     chao.desenha()  /*Chamar a variável chão, para aparecer na tela.*/
+
+    obstaculos.desenha()
     bloco.desenha()
 }
  
