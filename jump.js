@@ -1,6 +1,6 @@
 /*Variáveis do jogo*/
 
-var canvas, ctx, ALTURA, LARGURA, frames = 0, maxPulos = 3, velocidade = 6, estadoAtual, record,
+var canvas, ctx, ALTURA, LARGURA, frames = 0, maxPulos = 3, velocidade = 6, estadoAtual, record, img,
 
 estados ={
     jogar: 0,
@@ -171,6 +171,9 @@ function main (){
 
     if (record == null)
         record = 0
+
+    img = new Image()
+    img.scr = "imagens/sheet.png"
     
     roda()
 
@@ -193,8 +196,14 @@ function atualiza(){
       
 }
 function desenha (){
+
     ctx.fillStyle ='#80daff'
     ctx.fillRect(0, 0, LARGURA, ALTURA)
+    /*colocando imagem no background*/
+    /*bg.desenha(0, 0)8?88*/
+    bg.desenha(0, 0)
+    spriteBoneco.desenha(50, 50)
+    
 
     ctx.fillStyle = '#fff'
     ctx.font = '50px Arial'
