@@ -122,42 +122,56 @@ bloco = {
 },
 obstaculos ={
     _obs: [],
-    _scored:false
-    cores: ['#ffbc1c', '#ff1c1c', '#ff85e1','#52a7ff', '#78ff5d'],
-    tempoInsere: 0,
+    _scored:false,
+    /*cores: ['#ffbc1c', '#ff1c1c', '#ff85e1','#52a7ff', '#78ff5d'],*/
+    _sprites:[redObstacle, pinkObstacle, greenObstacle, yellowObstacle],
 
+    timerInsere: 0,
 
     insere: function(){
         this._obs.push({
             x:LARGURA,
+            y: chao.y - Math.floor(20 + Math.random()*100),
+
             /*largura: 30 + Math.floor(21 * Math.random()),*/
             largura: 50,
-            altura: 30 + Math.floor(120 *Math.random()),
-            cor:this.cores[Math.floor(5 * Math.random())]
+            sprite: this._sprites[Math.floor(this._sprites.length * Math.random())]
         })
 
-        this.tempoInsere = 30 + Math.floor(21 * Math.random())
+        this.tempoInsere = 30 + Math.floor(20 * Math.random())
     },
 
     atualiza: function(){
-        if(this.tempoInsere == 0){
+        if(this.timerInsere == 0){
             this.insere()
         }else{
-            this.tempoInsere--
+            this.timerInsere--
         }
 
         for(var i =0, tam = this._obs.length; i < tam; i++){
-            var obs = this._obs[i]
+            var obj = this._obs[i]
 
-            obs.x -= velocidade
+            obj.x -= VELOCIDADE
 
-            if(bloco.x < obs.x + obs.largura && bloco.x + bloco.largura >= obs.x && bloco.y + bloco.altura >= chao.y - obs.altura){
+            if(!bloco.colidindo && obj.x <= bloco.x + bloco.largura && bloco.x <= obj.x + obj.largura && obj.y <= bloco.y + bloco.altura){
 
-                estadoAtual = estados.perdeu
-
+                bloco.colidindo = true
+                setTimeout(function () {  
+                    bloco.colidindo = false
+                },500)
+                if(bloco.vidas >=1)
+                    bloco.vidas --
+                else{
+                    estadoAtual = estados.perdeu
+                }
+               
             }
-            else if(obs.x ==0){
+            else if(obj.x <=0 && !obj._scored){
                 bloco.score++
+                obj._scored = true
+
+                if(faseAtual < pontosParaNovaFase.length && bloco.score == pontosParaNovaFase[faseAtual])
+                    passarDeFase()
             }
 
             else if(obs.x <= -obs.largura){
@@ -174,28 +188,30 @@ obstaculos ={
 
     desenha: function(){
         for (var i = 0, tam = this._obs.length; i< tam; i++ ){
-            var obs = this._obs[i]
-            ctx.fillStyle = obs.cor
-            ctx.fillRect(obs.x, chao.y - obs.altura, obs.largura, obs.altura)
+            var obj = this._obs[i]
+            /*ctx.fillStyle = obs.cor
+            ctx.fillRect(obs.x, chao.y - obs.altura, obs.largura, obs.altura)*/
+            obj.sprite.desenha(obj.x, obj.y)
          }
     }
 }
 
 
 function clique(event){
-    if(estadoAtual == estados.jogando){
-        bloco.pula()
-
-    }else if(estadoAtual == estados.jogar){
+    if(estadoAtual == estados.jogar){
         estadoAtual = estados.jogando
-
-    }else if(estadoAtual == estados.perdeu && bloco.y >= 2 * ALTURA){
+        frames = 0
+    }
+    else if(estadoAtual == estados.perdeu && bloco.y >= 2 * ALTURA){
         estadoAtual = estados.jogar
         obstaculos.limpa()
         bloco.reset()
-       
+   }
+    else if(estadoAtual == estados.jogando){
+        bloco.pula()
+
     }
-   
+  
 }
 
 function main (){
