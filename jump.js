@@ -21,15 +21,16 @@ labelNovaFase = {
 
     fadeOut:function(dt){
         var fadeOutId = setInterval(function(){
-            if(labelNovaFase.opacidade < 1.0)
-                labelNovaFase.opacidade +=0.01
+            if(labelNovaFase.opacidade > 0.0)
+                labelNovaFase.opacidade -=0.01
+
             else{
-                clearInterval(fadeInId)
+                clearInterval(fadeOutId)
             }
         },10*dt)
+    }
 
-
-}
+},
 
 estados ={
     jogar: 0,
@@ -40,32 +41,42 @@ estados ={
 /*Variável Chão*/ 
 chao = {
     y:550,
+    x:0,
     altura:50,
     
     atualiza:function(){
-        this.x -=VELOCIDADE
-    }
+        this.x -= VELOCIDADE
+
+        if(this.x <=-30)
+            this.x +=30
+    },
 
     desenha: function(){
-        ctx.fillStyle = this.cor
-        ctx.fillRect(0, this.y, LARGURA, this.altura)
+       /*ctx.fillStyle = this.cor
+        ctx.fillRect(0, this.y, LARGURA, this.altura)*/
+        spriteChao.desenha(this.x, this.y)
+        sprite.Chao.desenha(this.x + spriteChao.largura,this.y)
     }
 }
 bloco = {
     x:50,
     y:0,
-    altura: 50,
-    largura: 50,
-    cor:'#ff9239',
+    altura: spriteBoneco.altura,
+    largura: spriteBoneco.largura,
     gravidade: 1.6,
     velocidade: 0,
     forcaDoPulo: 23.6,
     qntPulos: 0,
     score: 0,
+    rotacao:0,
+
+    vidas:3,
+    colidindo:false,
 
     atualiza: function(){
         this.velocidade += this.gravidade
         this.y += this.velocidade
+        this.rotacao += Math.PI/180 * VELOCIDADE
 
         if(this.y > chao.y - this.altura && estadoAtual != estados.perdeu){
             this.y = chao.y-this.altura
@@ -87,21 +98,31 @@ bloco = {
         this.y = 0
 
         if(this.score > record) {
-            localStorage.setItem('record', this.score)
             record = this.score
+            localStorage.setItem('record', this.score)
         }
-
+        this.vida = 3
         this.score = 0
+
+        VELOCIDADE = 6
+        faseAtual = 0
+        this.gravidade = 1.6
     },
 
     desenha: function(){
-        ctx.fillStyle =this.cor
-        ctx.fillRect(this.x, this.y, this.largura, this.altura)
-
+        /*ctx.fillStyle =this.cor
+        ctx.fillRect(this.x, this.y, this.largura, this.altura)*/
+        ctx.save()
+        ctx.translate(this.x + this.largura/2, this.y + this.altura/2)
+        ctx.rotate(this.rotacao)
+        spriteBoneco.desenha(-this.largura/2, -this.altura/2)
+        ctx.restore()
+        
     }
 },
 obstaculos ={
     _obs: [],
+    _scored:false
     cores: ['#ffbc1c', '#ff1c1c', '#ff85e1','#52a7ff', '#78ff5d'],
     tempoInsere: 0,
 
