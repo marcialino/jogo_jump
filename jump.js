@@ -1,6 +1,35 @@
 /*Variáveis do jogo*/
 
-var canvas, ctx, ALTURA, LARGURA, frames = 0, maxPulos = 3, velocidade = 6, estadoAtual, record, img,
+var canvas, ctx, ALTURA, LARGURA, frames = 0, maxPulos = 3, VELOCIDADE = 6, estadoAtual, record, img,
+
+pontosParaNovaFase= [5,10,15,20]
+faseAtual =0
+
+labelNovaFase = {
+    texto: "",
+    opacidade:0.0,
+
+    fadeIn:function(dt){
+        var fadeInId = setInterval(function(){
+            if(labelNovaFase.opacidade < 1.0)
+                labelNovaFase.opacidade +=0.01
+            else{
+                clearInterval(fadeInId)
+            }
+        },10*dt)
+    },
+
+    fadeOut:function(dt){
+        var fadeOutId = setInterval(function(){
+            if(labelNovaFase.opacidade < 1.0)
+                labelNovaFase.opacidade +=0.01
+            else{
+                clearInterval(fadeInId)
+            }
+        },10*dt)
+
+
+}
 
 estados ={
     jogar: 0,
@@ -12,7 +41,10 @@ estados ={
 chao = {
     y:550,
     altura:50,
-    cor:'#e8da78',
+    
+    atualiza:function(){
+        this.x -=VELOCIDADE
+    }
 
     desenha: function(){
         ctx.fillStyle = this.cor
@@ -173,7 +205,7 @@ function main (){
         record = 0
 
     img = new Image()
-    img.scr = "imagens/sheet.png"
+    img.scr="imagens/sheet.png"
     
     roda()
 
@@ -197,10 +229,13 @@ function atualiza(){
 }
 function desenha (){
 
-    ctx.fillStyle ='#80daff'
-    ctx.fillRect(0, 0, LARGURA, ALTURA)
+    /*ctx.fillStyle ='#80daff'*/
+    /*ctx.fillRect(0, 0, LARGURA, ALTURA)*/
+
     /*colocando imagem no background*/
-    /*bg.desenha(0, 0)8?88*/
+
+    /*bg.desenha(0, 0)*/
+
     bg.desenha(0, 0)
     spriteBoneco.desenha(50, 50)
     
@@ -252,6 +287,7 @@ function desenha (){
   
     chao.desenha()  /*Chamar a variável chão, para aparecer na tela.*/
     bloco.desenha()
+    this.desenha()
 }
  
     /*Função para inicializar o jogo*/

@@ -1,5 +1,5 @@
-class Sprite {
-    constructor(x, y, largura, altura) {
+function Sprite(x,y,largura,altura) {
+    
         this.x = x
         this.y = y
         this.largura = largura
@@ -11,7 +11,7 @@ class Sprite {
         this.desenha = function (xCanvas, yCanvas) {
             ctx.drawImage(img, this.x, this.y, this.largura, this.altura, xCanvas, yCanvas, this.largura, this.altura)
         }
-    }
+    
 }
 
 var bg = new Sprite(0, 0, 600, 600)/*br= background. Coordenadas da imagem sheet.*/
