@@ -55,7 +55,7 @@ chao = {
        /*ctx.fillStyle = this.cor
         ctx.fillRect(0, this.y, LARGURA, this.altura)*/
         spriteChao.desenha(this.x, this.y)
-        sprite.Chao.desenha(this.x + spriteChao.largura,this.y)
+        spriteChao.desenha(this.x + spriteChao.largura,this.y)
     }
 }
 bloco = {
@@ -174,7 +174,7 @@ obstaculos ={
                     passarDeFase()
             }
 
-            else if(obs.x <= -obs.largura){
+            else if(obj.x <= -obj.largura){
                 this._obs.splice(i, 1)
                 tam--
                 i--
@@ -209,10 +209,25 @@ function clique(event){
    }
     else if(estadoAtual == estados.jogando){
         bloco.pula()
-
     }
-  
-}
+  }
+
+  function passarDefesa(){
+    VELOCIDADE++
+    faseAtual++
+    bloco.vidas++
+
+    if(faseAtual == 4)
+        bloco.gravidade *= 0.6
+
+    labelNovaFase.texto = 'Level ' + faseAtual
+    labelNovaFase.fadeIn(0.4)  
+
+    setTimeout(function () { 
+        labelNovaFase.fadeOut(0.4)
+     },800)
+  }
+
 
 function main (){
     ALTURA = window.innerHeight
@@ -255,15 +270,15 @@ function roda(){
 
 }
 function atualiza(){
-    frames++
-
-    bloco.atualiza()
-
-      if(estadoAtual == estados.jogando)  {
+    if(estadoAtual == estados.jogando)  {
         obstaculos.atualiza()
+        
+        chao.atualiza()
+        bloco.atualiza()
       }
-      
+         
 }
+
 function desenha (){
 
     /*ctx.fillStyle ='#80daff'*/
@@ -276,21 +291,48 @@ function desenha (){
     bg.desenha(0, 0)
     spriteBoneco.desenha(50, 50)
     
-
     ctx.fillStyle = '#fff'
     ctx.font = '50px Arial'
     ctx.fillText (bloco.score, 30, 68)
+    ctx.fillText(bloco.vidas, 540, 68)
 
-    if(estadoAtual == estados.jogar){
-        ctx.fillStyle ='green'
-        ctx.fillRect(LARGURA / 2 - 50, ALTURA / 2 -50, 100, 100)
+    ctx.fillStyle = "rgba(0,0,0, " + labelNovaFase.opacidade +")"
+    ctx.fillText(labelNovaFase.texto, canvas.width/2 - ctx.measureText(labelNovaFase.texto).width/2, canvas.height/3)
+
+    if(estadoAtual == estados.jogando)
+        obstaculos.desenha()
+
+    chao.desenha()
+    bloco.desenha()
+    
+
+    if(estadoAtual == estados.jogar)
+        /*ctx.fillStyle ='green'
+        ctx.fillRect(LARGURA / 2 - 50, ALTURA / 2 -50, 100, 100)*/
+        jogar.desenha(LARGURA / 2 - jogar.largura /2 - jogar.altura /2)
+    
+    
+    if(estadoAtual == estados.perdeu){
+        /*ctx.fillStyle = 'red'
+        ctx.fillRect(LARGURA / 2 - 50, ALTURA / 2 - 50, 100, 100)*/
+        perdeu.desenha(LARGURA / 2 - perdeu.largura / 2, ALTURA /2 - perdeu.altura / 2 - spriteRecord.altura / 2)
+
+        spriteRecord.desenha(LARGURA / 2 - spriteRecord.largura / 2, ALTURA / 2 + perdeu.altura / 2 - spriteRecord.altura / 2 - 25)
+
+        ctx.fillStyle='#fff'
+        ctx.fillText(bloco.score, 375, 390)
+
+        if (bloco.score > record){
+            novo.desenha(LARGURA / 2 - 180, ALTURA /2 + 30)
+            ctx.fillText(bloco.score, 420, 470)
+        }
+        else{
+            ctx.fillText(record, 420, 470)
+        }
+
     }
 
-    else if(estadoAtual == estados.perdeu){
-        ctx.fillStyle = 'red'
-        ctx.fillRect(LARGURA / 2 - 50, ALTURA / 2 - 50, 100, 100)
-
-        ctx.save()
+        /*ctx.save()
         ctx.translate(LARGURA/2, ALTURA/2)
         ctx.fillStyle ='#fff'
 
@@ -316,15 +358,15 @@ function desenha (){
             ctx.fillText(bloco.score, -39, 19)
         
             ctx.restore()
-    }
+    }*/
   
-        else if(estadoAtual == estados.jogando){
+        /*else if(estadoAtual == estados.jogando){
             obstaculos.desenha()
         }
   
     chao.desenha()  /*Chamar a variável chão, para aparecer na tela.*/
-    bloco.desenha()
-    this.desenha()
+    /*bloco.desenha()*/
+    
 }
  
     /*Função para inicializar o jogo*/
