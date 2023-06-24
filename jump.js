@@ -212,7 +212,7 @@ function clique(event){
     }
   }
 
-  function passarDefesa(){
+  function passarDeFase(){
     VELOCIDADE++
     faseAtual++
     bloco.vidas++
